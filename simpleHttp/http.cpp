@@ -108,7 +108,7 @@ int simpleHttp::openConnection(string _host, string _port)
 int simpleHttp::reCreateSocket()
 {
 	close(s);
-	openConnection(host, port);
+	return openConnection(host, port);
 }
 
 int simpleHttp::sendCookies()

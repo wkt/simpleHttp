@@ -19,14 +19,18 @@ int main()
 
 	if (Client.openConnection(server, port) != 1)
 	{
-		perror("Can't open connection: ");
+		cout << "Can't open connection" << endl;
+		perror("");
 		return 1;
 	}
 
 	Client.GET("/", Client.returnCookies(), res, head, true);
 
-	Client.getHeaderValue("Server", res);
-	cout << "Server: " << res << endl;
+	cout << res << endl;
+
+
+	if (Client.getHeaderValue("Server", res) == 1)
+		cout << "Server: " << res << endl;
 
 	cout << Client.returnCookies() << endl;
 
