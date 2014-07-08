@@ -46,6 +46,7 @@ void Cookies::getCookies(string str)
 		
 		addCookie(cookieName, cookieValue);
 	}
+
 	return;
 }
 

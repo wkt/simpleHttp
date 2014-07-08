@@ -20,36 +20,59 @@ using namespace std;
 
 int simpleHttp::rev(string &data, string &headers)
 {
-	if (debug)
-		cout << "[ rev() ]" << endl;
-	char tmp[1000];
-	int i = 0;
-	string tmp2;
 
-	while(recv(s, tmp, sizeof tmp, 0) > 0)
+	data.clear();
+
+	int n, rv, r;
+	fd_set readfds;
+	struct timeval tv;
+
+	FD_ZERO(&readfds);
+	FD_SET(s, &readfds);
+
+	n = s + 1;
+	tv.tv_sec = 1;
+	tv.tv_usec = 0;	
+
+	bool haveHeader = false;
+
+	for (size_t i = 0; rv = select(n, &readfds, NULL, NULL, &tv); i++)
 	{
-		if (i == 0)
+
+		if (rv <= 0)
+			break;
+
+		char buf[1000];
+		r = recv(s, buf, sizeof buf, 0);
+		string str = string(buf);
+
+
+		if (( str.find("\r\n\r\n") != string::npos) && (haveHeader == false ))
 		{
-			parseHeaders(tmp);
-			getCookies(tmp);	
-			if (debug)
-				cout << "[ " <<  getStatus() << " ]" << endl;
-		} else {
-			data += tmp;
+			size_t headerEnd = str.find("\r\n\r\n");
+
+			headers = str.substr(0, headerEnd);
+
+			parseHeaders(headers);
+			getCookies(headers);
+
+			data += str.substr(headerEnd + 3, str.size() - headerEnd + 3);
+
+			haveHeader = true;
 		}
-		i++;
+		else
+		{
+			data += str;
+		}
 	}
-	string res;
-	close(s);
-	return 1;
+
+	if (r <= 0)
+		return r;
+	return rv;
 }
 
 int simpleHttp::GET(string q, string cookies, string &res, string &head, bool wait)
 {
-	string tmp;
-	getHeaderValue("connection", tmp);
-	if (res == "close" || (res == ""))
-		reCreateSocket();
 	if (debug)
 		cout << "[ GET(" + q + ") ]" << endl;
 	string str = "GET " + q + " HTTP/1.1\r\nHost: " + host + "\r\nAccept: text/html\r\n" + cookies + "Refer: http://" + host + "/\r\nConnection: keep-alive\r\n\r\n";
@@ -64,10 +87,6 @@ int simpleHttp::GET(string q, string cookies, string &res, string &head, bool wa
 
 int simpleHttp::POST(std::string q, std::string data, string cookies, string &res, string &head, bool wait)
 {
-	string tmp;
-	getHeaderValue("connection", tmp);
-	if (res == "close" || (res == ""))
-		reCreateSocket();
 	if (debug)
 		cout << "[ POST(" << q << ", " << data << + ") ]"  << endl;
 
