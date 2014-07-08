@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdio.h>
 
 #include "./simpleHttp/http.hpp"
 
@@ -9,12 +10,18 @@ int main()
 {
 	string res, head;
 
-	string server = "naurunappula.com";
+	string server = "imgur.com";
 	string port = "80";
 
 	simpleHttp Client;
 
-	Client.openConnection(server, port);
+	Client.toggleDebug(true);
+
+	if (Client.openConnection(server, port) != 1)
+	{
+		perror("Can't open connection: ");
+		return 1;
+	}
 
 	Client.GET("/", Client.returnCookies(), res, head, true);
 
