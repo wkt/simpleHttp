@@ -31,8 +31,9 @@ int simpleHttp::rev(string &data, string &headers)
 	FD_SET(s, &readfds);
 
 	n = s + 1;
+
 	tv.tv_sec = 1;
-	tv.tv_usec = 0;	
+	tv.tv_usec = 0;
 
 	bool haveHeader = false;
 
@@ -42,14 +43,18 @@ int simpleHttp::rev(string &data, string &headers)
 		if (rv <= 0)
 			break;
 
-		char buf[1000];
+		char buf[2000];
 		r = recv(s, buf, sizeof buf, 0);
+
+		if (r <= 0)
+			break;
+
 		string str = string(buf);
 
 
 		if (( str.find("\r\n\r\n") != string::npos) && (haveHeader == false ))
 		{
-			size_t headerEnd = str.find("\r\n\r\n");
+			size_t headerEnd = str.find("\r\n\r\n") + 3;
 
 			headers = str.substr(0, headerEnd);
 
@@ -65,6 +70,11 @@ int simpleHttp::rev(string &data, string &headers)
 			data += str;
 		}
 	}
+
+	//string res;
+	//getHeaderValue("Connection", res);
+	//if ((res == "close") || (res.empty()))
+	reCreateSocket();	
 
 	if (r <= 0)
 		return r;

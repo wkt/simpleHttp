@@ -13,7 +13,7 @@ int main()
 
 	string res, head;
 
-	string server = "google.com";
+	string server = "imgur.com";
 	string port = "80";
 
 	simpleHttp Client;
@@ -24,8 +24,9 @@ int main()
 
 
 	Client.GET("/", Client.returnCookies(), res, head, true);
-
 	cout << res << endl;
+
+	cout << Client.returnCookies() << endl;
 
 	cout << "End: " << time(0) << endl;
 

@@ -36,17 +36,16 @@ void Cookies::getCookies(string str)
 	size_t nameStart = 0;
 	while(str.find("Set-Cookie: ", nameStart + 1) != string::npos)
 	{
-
 		nameStart = str.find("Set-Cookie: ", nameStart) + 12;
 		size_t nameEnd = str.find("=", nameStart);
 		size_t valueEnd = str.find("; ", nameStart) - 2;
 
 		string cookieName = str.substr(nameStart, nameEnd - nameStart );
 		string cookieValue = str.substr(nameEnd + 1, valueEnd - nameEnd + 1);
+
 		
 		addCookie(cookieName, cookieValue);
 	}
-
 	return;
 }
 

@@ -41,7 +41,6 @@ void Headers::parseHeaders(string str)
 
 		while(str.find("\r\n", lineStart + 1) != string::npos)
 		{
-
 			lineStart = str.find("\r\n", lineStart) + 2;
 			size_t nameEnd = str.find(": ", lineStart);
 
