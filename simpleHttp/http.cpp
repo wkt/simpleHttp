@@ -21,7 +21,7 @@ using namespace std;
 int simpleHttp::rev(string &data, string &headers)
 {
 
-	data.clear();
+	//data.clear();
 
 	int n, rv, r;
 	fd_set readfds;
@@ -43,7 +43,7 @@ int simpleHttp::rev(string &data, string &headers)
 		if (rv <= 0)
 			break;
 
-		char buf[2000];
+		char buf[5000];
 		r = recv(s, buf, sizeof buf, 0);
 
 		if (r <= 0)
@@ -60,8 +60,7 @@ int simpleHttp::rev(string &data, string &headers)
 
 			parseHeaders(headers);
 			getCookies(headers);
-
-			data += str.substr(headerEnd + 3, str.size() - headerEnd + 3);
+			data += str.substr(headerEnd, str.size() - headerEnd);
 
 			haveHeader = true;
 		}
@@ -71,13 +70,14 @@ int simpleHttp::rev(string &data, string &headers)
 		}
 	}
 
-	//string res;
-	//getHeaderValue("Connection", res);
-	//if ((res == "close") || (res.empty()))
-	reCreateSocket();	
+	string res;
+	getHeaderValue("Connection", res);
+	if ((res == "close") || (res.empty()))
+		reCreateSocket();
 
 	if (r <= 0)
 		return r;
+
 	return rv;
 }
 
@@ -103,7 +103,7 @@ int simpleHttp::POST(std::string q, std::string data, string cookies, string &re
 	string str = "POST " + q + " HTTP/1.1\r\nHost: " + host + "\r\nAccept: text/html\r\n" + cookies + "Refer: http://" + host + "/\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length:" + to_string(data.size()) + "\r\nConnection: keep-alive\r\n\r\n" + data;
 	if (send(s, str.c_str(), str.size(), 0) > 0)
 	{
-		if (wait)
+		if (wait == true)
 			rev(res, head);
 		return 1;
 	}

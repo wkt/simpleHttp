@@ -17,16 +17,12 @@ class Headers
 
 		virtual void toggleDebug(bool val);
 
-	protected:
-		std::string header;	
-
 	private:
-
-		std::map<std::string, std::string> headerValues;
+		std::string header;
+		std::map<std::string, std::string> headers;
 		int status;
 		std::string statusMessage;
 		bool debug;
-		std::map<std::string, std::string> headers;
 };
 
 #endif

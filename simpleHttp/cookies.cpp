@@ -43,7 +43,6 @@ void Cookies::getCookies(string str)
 		string cookieName = str.substr(nameStart, nameEnd - nameStart );
 		string cookieValue = str.substr(nameEnd + 1, valueEnd - nameEnd + 1);
 
-		
 		addCookie(cookieName, cookieValue);
 	}
 	return;
