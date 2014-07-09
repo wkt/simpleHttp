@@ -62,6 +62,8 @@ void Headers::parseHeaders(string str)
 
 			addHeaderValue(settingName, settingValue);
 		}
+		if (debug)
+			cout << "[ " << getStatus() << " ]" << endl;
 
 		return;
 	}

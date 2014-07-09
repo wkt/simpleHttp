@@ -20,8 +20,10 @@ using namespace std;
 
 int simpleHttp::rev(string &data, string &headers)
 {
+	if (debug)
+		cout << "[ rev() ]" << endl;
 
-	//data.clear();
+	data.clear();
 
 	int n, rv, r;
 	fd_set readfds;
@@ -76,22 +78,41 @@ int simpleHttp::rev(string &data, string &headers)
 		reCreateSocket();
 
 	if (r <= 0)
-		return r;
-
-	return rv;
+		return r - 2;
+	if (rv < 0)
+		return rv;
+	return 1;
 }
+
+int simpleHttp::doSend(string tmp)
+{
+	string str = tmp;
+	int sent;
+
+	while(1)
+	{
+		sent = send(s, tmp.c_str(), tmp.size(), 0);
+		if (sent < 0)
+			return sent;
+		if (sent != str.size())
+		{
+			str = str.substr(sent , str.size() - sent  );	
+			continue;
+		}
+		break;
+	}
+	return 1;
+}
+
 
 int simpleHttp::GET(string q, string cookies, string &res, string &head, bool wait)
 {
 	if (debug)
 		cout << "[ GET(" + q + ") ]" << endl;
-	string str = "GET " + q + " HTTP/1.1\r\nHost: " + host + "\r\nAccept: text/html\r\n" + cookies + "Refer: http://" + host + "/\r\nConnection: keep-alive\r\n\r\n";
-	if (send(s, str.c_str(), str.size(), 0) > 0)
-	{
+	string str = "GET " + q + " HTTP/1.1\r\nHost: " + host + "\r\n" + cookies + "Connection: keep-alive\r\n\r\n";
+	if (doSend(str) == 1)
 		if (wait)
-			rev(res, head);
-		return 1;
-	}
+			return rev(res, head);
 	return 0;
 }
 
@@ -100,15 +121,25 @@ int simpleHttp::POST(std::string q, std::string data, string cookies, string &re
 	if (debug)
 		cout << "[ POST(" << q << ", " << data << + ") ]"  << endl;
 
-	string str = "POST " + q + " HTTP/1.1\r\nHost: " + host + "\r\nAccept: text/html\r\n" + cookies + "Refer: http://" + host + "/\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length:" + to_string(data.size()) + "\r\nConnection: keep-alive\r\n\r\n" + data;
-	if (send(s, str.c_str(), str.size(), 0) > 0)
-	{
-		if (wait == true)
-			rev(res, head);
-		return 1;
-	}
+	string str = "POST " + q + " HTTP/1.1\r\nHost: " + host + "\r\n" + cookies + "Content-Type: application/x-www-form-urlencoded\r\nContent-Length:" + to_string(data.size()) + "\r\nConnection: keep-alive\r\n\r\n" + data;
+	if (doSend(str) == 1)
+		if (wait)
+			return rev(res, head);
 	return 0;
 }
+
+
+int simpleHttp::HEAD(string q, string cookies, string &head)
+{
+	string tmp;
+	if (debug)
+		cout << "[ HEAD(" << q << ") ]" << endl;
+	string str = "HEAD " + q + " HTTP/1.1\r\nHost: " + host + "\r\n" + cookies + "Connection: keep-alive\r\n\r\n";
+	if (doSend(str) == 1)
+		return rev(tmp, head);
+	return 0;
+}
+
 
 int simpleHttp::openConnection(string _host, string _port)
 {
@@ -144,13 +175,6 @@ int simpleHttp::reCreateSocket()
 	return openConnection(host, port);
 }
 
-int simpleHttp::sendCookies()
-{
-	string res, head;
-	GET("/", returnCookies(), res, head, false);
-	if (res.find("OK") == 0) return 1;
-	return -1;
-}
 
 void simpleHttp::toggleDebug(bool val)
 {
