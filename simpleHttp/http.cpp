@@ -112,6 +112,10 @@ int simpleHttp::POST(std::string q, std::string data, string cookies, string &re
 
 int simpleHttp::openConnection(string _host, string _port)
 {
+
+	if ((!host.empty()) && (host != _host))
+		clearCookies();
+
 	struct addrinfo hints;
 	struct addrinfo *servinfo;
 

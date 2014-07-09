@@ -40,8 +40,13 @@ void Cookies::getCookies(string str)
 		size_t nameEnd = str.find("=", nameStart);
 		size_t valueEnd = str.find("; ", nameStart) - 2;
 
+		size_t domainStart = str.find("domain=", nameStart) + 6;
+		size_t domainEnd = str.find("\r\n", nameStart);
+
 		string cookieName = str.substr(nameStart, nameEnd - nameStart );
 		string cookieValue = str.substr(nameEnd + 1, valueEnd - nameEnd + 1);
+
+		string domain = str.substr(domainStart, domainEnd - domainStart);
 
 		addCookie(cookieName, cookieValue);
 	}
@@ -53,14 +58,9 @@ void Cookies::addCookie(string name, string value)
 	cookies[name] = value;
 }
 
-void Cookies::delCookie(string str)
-{
-
-}
-
 int Cookies::getCookieValue(string str, string &res)
 {
-	if (cookies.find(str) != cookies.end())
+	if ( cookies.find(str) != cookies.end() )
 	{
 		res = cookies[str];
 		return 1;
@@ -88,3 +88,5 @@ void Cookies::toggleDebug(bool val)
 {
 	debug = val;
 }
+
+void Cookies::clearCookies() { cookies.clear(); }
