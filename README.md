@@ -3,9 +3,7 @@ simpleHttp
 
 Easy to use http client class made with C++
 
-Example
 
-[code]
 #include <iostream>
 #include <string>
 #include <stdio.h>
@@ -37,4 +35,4 @@ int main()
 	cout << "End: " << time(0) << endl;
 
 }
-[/code]
+
