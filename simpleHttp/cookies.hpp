@@ -1,6 +1,5 @@
 #ifndef COOKIES_HPP_
 #define COOKIES_HPP_
-ff
 #include <string>
 #include <map>
 
