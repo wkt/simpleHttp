@@ -13,16 +13,14 @@ int main()
 
 	string res, head;
 
-	string server = "imgur.com";
+	string server = "www.google.fi";
 	string port = "80";
 
 	simpleHttp Client;
 
-	Client.toggleDebug(false);
+	Client.toggleDebug(true);
 
 	Client.openConnection(server, port);
-
-
 	Client.GET("/", Client.returnCookies(), res, head, true);
 	cout << res << endl;
 

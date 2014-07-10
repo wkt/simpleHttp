@@ -40,15 +40,11 @@ void Cookies::getCookies(string str)
 		size_t nameEnd = str.find("=", nameStart);
 		size_t valueEnd = str.find("; ", nameStart) - 2;
 
-		size_t domainStart = str.find("domain=", nameStart) + 6;
-		size_t domainEnd = str.find("\r\n", nameStart);
-
 		string cookieName = str.substr(nameStart, nameEnd - nameStart );
 		string cookieValue = str.substr(nameEnd + 1, valueEnd - nameEnd + 1);
 
-		string domain = str.substr(domainStart, domainEnd - domainStart);
-
-		addCookie(cookieName, cookieValue);
+		if ( !isForced(cookieName) )
+			addCookie(cookieName, cookieValue);
 	}
 	return;
 }
@@ -56,6 +52,18 @@ void Cookies::getCookies(string str)
 void Cookies::addCookie(string name, string value)
 {
 	cookies[name] = value;
+}
+
+void Cookies::forceCookie(string name, string value)
+{
+	fcookies[name] = value;
+}
+
+bool Cookies::isForced(string name)
+{
+	if (fcookies.find(name) != fcookies.end())
+		return true;
+	return false;
 }
 
 int Cookies::getCookieValue(string str, string &res)
@@ -73,6 +81,10 @@ string Cookies::returnCookies()
 	string res = "Cookie: ";
 	for (map<string, string>::iterator p = cookies.begin(); p != cookies.end(); ++p)
 		res += p->first + "=" + p->second + "; ";
+	for (map<string, string>::iterator p = fcookies.begin(); p != fcookies.end(); ++p)
+		res += p->first + "=" + p->second + "; ";
+
+
 	if (res != "Cookie: ")
 	{
 		res.pop_back();
