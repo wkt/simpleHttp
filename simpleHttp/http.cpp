@@ -15,7 +15,7 @@
 #include <vector>
 
 #include "http.hpp"
-ff
+
 using namespace std;
 
 int simpleHttp::rev(string &data, string &headers)
