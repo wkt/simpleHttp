@@ -12,6 +12,7 @@ class simpleHttp : public Cookies, public Headers
 
 		int doSend(std::string str);
 		/*
+		asdad	test
 			doSend();
 				sends data to server using send()
 
@@ -20,11 +21,9 @@ class simpleHttp : public Cookies, public Headers
 			Return values:
 				1 – Data were sent succesfully.
 				-1 - send() failed.
-
-
 		*/
 
-		int openConnection(std::string _host, std::string _port);
+		int openConnection(std::string _host, std::string _port = "80");
 		/*
 			openConnection();
 			Tries to open connection to server
