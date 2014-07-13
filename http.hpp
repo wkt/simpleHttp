@@ -10,6 +10,8 @@ class simpleHttp : public Cookies, public Headers
 {
 	public:
 
+
+
 		int doSend(std::string str);
 		/*
 		asdad	test
@@ -100,6 +102,13 @@ class simpleHttp : public Cookies, public Headers
 
 		*/
 
+        bool toggleRev(bool = true);
+        /*
+
+            toggleRev()
+                Chooses should we skip rev() or not.
+                This can make code much faster but server may try send that data later on rev().
+        */
 		void toggleDebug(bool val);
 
 	protected:
@@ -110,6 +119,7 @@ class simpleHttp : public Cookies, public Headers
 		std::string host;
 		std::string port;
 
+        bool revstatus;
 		bool debug;
 };
 

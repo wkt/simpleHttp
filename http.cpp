@@ -5,7 +5,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 #include <iostream>
 #include <vector>
 #include <errno.h>
@@ -96,7 +96,7 @@ int simpleHttp::doSend(string tmp)
 			return sent;
 		if (sent != str.size())
 		{
-			str = str.substr(sent , str.size() - sent  );	
+			str = str.substr(sent , str.size() - sent  );
 			continue;
 		}
 		break;
@@ -156,15 +156,15 @@ int simpleHttp::openConnection(string _host, string _port)
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_UNSPEC;
 	hints.ai_socktype = SOCK_STREAM;
- 
+
 	if (getaddrinfo(host.c_str(), port.c_str(), &hints, &servinfo) != 0) { return -2; }
- 
+
 	s = socket (servinfo->ai_family, servinfo->ai_socktype, servinfo->ai_protocol);
 
 	if (s == -1) { return -1; }
 
 	if (connect(s, servinfo->ai_addr, servinfo->ai_addrlen) != 0) { return -3; }
-	freeaddrinfo(servinfo);	
+	freeaddrinfo(servinfo);
 
 	return 1;
 }
